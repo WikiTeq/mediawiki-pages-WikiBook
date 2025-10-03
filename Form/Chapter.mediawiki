@@ -1,0 +1,23 @@
+<noinclude>
+{{#forminput:form=Chapter}}
+</noinclude><includeonly>
+{{{info|create title=Create a Chapter|edit title=Edit a Chapter|page name=<Chapter[Chapter title]>}}}
+{{{for template|Chapter}}}
+{|class="wiki-formtable"
+! Parent section* <p>The section this chapter belongs to</p>
+| {{{field|Chapter section|mandatory|input type=tokens|values from category=Section|max values=1|existing values only}}}
+|-
+! Chapter number* <p>The chapter order within the section</p>
+| {{{field|Chapter number|input type=number|mandatory}}}
+|-
+! Primary authors
+| {{{field|Chapter authors|input type=tokens|delimiter=;|list}}}
+|-
+|}
+{{{end template}}}
+
+{{{standard input|free text}}}
+
+{{{standard input|save}}} {{{standard input|cancel}}}
+
+</includeonly>

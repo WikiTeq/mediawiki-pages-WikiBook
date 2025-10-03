@@ -1,0 +1,81 @@
+{
+    "publisher": "WikiTeq",
+    "author": "WikiTeq",
+    "language": "en",
+    "url": "https:\/\/github.com\/WikiTeq\/mediawiki-pages-WikiBook",
+    "packages": {
+        "1759522955": {
+            "globalID": "com.wikiteq.WikiBook",
+            "description": "A small, ready-to-import MediaWiki package that models a Book with Chapters and Sections.",
+            "version": "1.0",
+            "pages": [
+                {
+                    "name": "Chapter",
+                    "namespace": "NS_TEMPLATE",
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Template%2FChapter.mediawiki"
+                },
+                {
+                    "name": "Section",
+                    "namespace": "NS_TEMPLATE",
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Template%2FSection.mediawiki"
+                },
+                {
+                    "name": "Book",
+                    "namespace": "NS_TEMPLATE",
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Template%2FBook.mediawiki"
+                },
+                {
+                    "name": "Section",
+                    "namespace": null,
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Form%2FSection.mediawiki"
+                },
+                {
+                    "name": "Chapter",
+                    "namespace": null,
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Form%2FChapter.mediawiki"
+                },
+                {
+                    "name": "Chapter author",
+                    "namespace": null,
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Property%2FChapter%20author.mediawiki"
+                },
+                {
+                    "name": "Has order",
+                    "namespace": null,
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Property%2FHas%20order.mediawiki"
+                },
+                {
+                    "name": "Has parent page",
+                    "namespace": null,
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Property%2FHas%20parent%20page.mediawiki"
+                },
+                {
+                    "name": "Section",
+                    "namespace": "NS_CATEGORY",
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Category%2FSection.mediawiki"
+                },
+                {
+                    "name": "Chapter",
+                    "namespace": "NS_CATEGORY",
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Category%2FChapter.mediawiki"
+                },
+                {
+                    "name": "Book",
+                    "namespace": "NS_MODULE",
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Module%2FBook.mediawiki"
+                },
+                {
+                    "name": "Wiki-book-title",
+                    "namespace": "NS_MEDIAWIKI",
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/MediaWiki%2FWiki-book-title.mediawiki"
+                }
+            ],
+            "requiredExtensions": [
+              'SemanticMediaWiki',
+              'PageForms',
+              'Scribunto',
+              'SemanticScribunto'
+            ]
+        }
+    }
+}
