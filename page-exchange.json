@@ -71,10 +71,10 @@
                 }
             ],
             "requiredExtensions": [
-              'SemanticMediaWiki',
-              'PageForms',
-              'Scribunto',
-              'SemanticScribunto'
+              "Semantic MediaWiki",
+              "Page Forms",
+              "Scribunto",
+              "Semantic Scribunto"
             ]
         }
     }
