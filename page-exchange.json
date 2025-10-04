@@ -36,17 +36,17 @@
                 },
                 {
                     "name": "Chapter author",
-                    "namespace": "NS_PROPERTY",
+                    "namespace": "SMW_NS_PROPERTY",
                     "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Property%2FChapter%20author.mediawiki"
                 },
                 {
                     "name": "Has order",
-                    "namespace": "NS_PROPERTY",
+                    "namespace": "SMW_NS_PROPERTY",
                     "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Property%2FHas%20order.mediawiki"
                 },
                 {
                     "name": "Has parent page",
-                    "namespace": "NS_PROPERTY",
+                    "namespace": "SMW_NS_PROPERTY",
                     "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Property%2FHas%20parent%20page.mediawiki"
                 },
                 {
