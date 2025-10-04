@@ -26,27 +26,27 @@
                 },
                 {
                     "name": "Section",
-                    "namespace": null,
+                    "namespace": "PF_NS_FORM",
                     "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Form%2FSection.mediawiki"
                 },
                 {
                     "name": "Chapter",
-                    "namespace": null,
+                    "namespace": "PF_NS_FORM",
                     "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Form%2FChapter.mediawiki"
                 },
                 {
                     "name": "Chapter author",
-                    "namespace": null,
+                    "namespace": "NS_PROPERTY",
                     "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Property%2FChapter%20author.mediawiki"
                 },
                 {
                     "name": "Has order",
-                    "namespace": null,
+                    "namespace": "NS_PROPERTY",
                     "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Property%2FHas%20order.mediawiki"
                 },
                 {
                     "name": "Has parent page",
-                    "namespace": null,
+                    "namespace": "NS_PROPERTY",
                     "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Property%2FHas%20parent%20page.mediawiki"
                 },
                 {
