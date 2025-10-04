@@ -1,1 +1,1 @@
-[[has type::Text]]
+This is a property of type [[Has type::Text]].
