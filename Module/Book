@@ -162,10 +162,13 @@ local function breadcrumbs(book, section, chapter)
         :tag('ul')
         	:css({
         		['list-style'] = 'none',
-				['display'] = 'flex',
-				['flex-wrap'] = 'wrap',
-				['padding'] = '.5rem 1rem',
-				['background-color'] = '#f7f7f7'
+				    ['display'] = 'flex',
+				    ['flex-wrap'] = 'wrap',
+				    ['padding'] = '.5rem 1rem',
+				    ['background-color'] = '#f7f7f7',
+				    ['margin-left'] = '0',
+            ['margin-top'] = '0',
+            ['margin-bottom'] = '1rem'
         	})
             :addClass('wiki-book-breadcrumb')
             :wikitext(table.concat(crumbs, ''))
@@ -243,11 +246,11 @@ local function createNextChapter()
 		'sort=Has order',
 		'order=desc',
 		'limit=1'
-	} or '0'
+	} or {}
 
 	-- Convert result to number or default to 0
-	if #lastNumber > 0 then
-		lastNumber = tonumber(lastNumber[1][1])
+	if type(lastNumber) == 'table' and #lastNumber > 0 then
+		lastNumber = #lastNumber
 	else
 		lastNumber = 0	
 	end
