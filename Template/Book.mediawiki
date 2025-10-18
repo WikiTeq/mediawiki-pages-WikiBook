@@ -1,1 +1,1 @@
-<includeonly>{{#invoke:Book|book}}</includeonly>
+<includeonly>{{#invoke:Book|showBookHierarchy}}</includeonly>

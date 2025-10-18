@@ -1,0 +1,7 @@
+Enter a page title into the field below.
+
+It will bring up a form that is pre-filled with:
+* the name of the current page as the parent of the newly created page
+* the number corresponding to the new last child element of the current page
+
+In the form, optionally, set the name of the book element corresponding to the newly created page, and the authors.

@@ -6,18 +6,13 @@
     "packages": {
         "1759522955": {
             "globalID": "com.wikiteq.WikiBook",
-            "description": "A small, ready-to-import MediaWiki package that models a Book with Chapters and Sections.",
+            "description": "A small, ready-to-import MediaWiki package that models a collection of pages as a Book",
             "version": "1.0",
             "pages": [
                 {
-                    "name": "Chapter",
+                    "name": "Subpage",
                     "namespace": "NS_TEMPLATE",
-                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Template%2FChapter.mediawiki"
-                },
-                {
-                    "name": "Section",
-                    "namespace": "NS_TEMPLATE",
-                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Template%2FSection.mediawiki"
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Template%2FSubpage.mediawiki"
                 },
                 {
                     "name": "Book",
@@ -25,19 +20,24 @@
                     "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Template%2FBook.mediawiki"
                 },
                 {
-                    "name": "Section",
+                    "name": "Subpage",
                     "namespace": "PF_NS_FORM",
-                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Form%2FSection.mediawiki"
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Form%2FSubpage.mediawiki"
                 },
                 {
-                    "name": "Chapter",
-                    "namespace": "PF_NS_FORM",
-                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Form%2FChapter.mediawiki"
-                },
-                {
-                    "name": "Chapter author",
+                    "name": "Has author",
                     "namespace": "SMW_NS_PROPERTY",
-                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Property%2FChapter%20author.mediawiki"
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Property%2FHas%20author.mediawiki"
+                },
+                {
+                    "name": "Has lead author",
+                    "namespace": "SMW_NS_PROPERTY",
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Property%2FHas%20lead%20author.mediawiki"
+                },
+                {
+                    "name": "Has contributing author",
+                    "namespace": "SMW_NS_PROPERTY",
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Property%2FHas%20contributing%20author.mediawiki"
                 },
                 {
                     "name": "Has order",
@@ -50,14 +50,9 @@
                     "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Property%2FHas%20parent%20page.mediawiki"
                 },
                 {
-                    "name": "Section",
-                    "namespace": "NS_CATEGORY",
-                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Category%2FSection.mediawiki"
-                },
-                {
-                    "name": "Chapter",
-                    "namespace": "NS_CATEGORY",
-                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Category%2FChapter.mediawiki"
+                    "name": "Has book element name",
+                    "namespace": "SMW_NS_PROPERTY",
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Property%2FHas%20book%20element%20name.mediawiki"
                 },
                 {
                     "name": "Book",
@@ -68,13 +63,34 @@
                     "name": "Wiki-book-title",
                     "namespace": "NS_MEDIAWIKI",
                     "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/MediaWiki%2FWiki-book-title.mediawiki"
+                },
+                {
+                    "name": "Wiki-book-footer",
+                    "namespace": "NS_MEDIAWIKI",
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/MediaWiki%2FWiki-book-footer.mediawiki"
+                },
+                {
+                    "name": "Wiki-book-breadcrumbs-separator",
+                    "namespace": "NS_MEDIAWIKI",
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/MediaWiki%2FWiki-book-breadcrumbs-separator.mediawiki"
+                },
+                {
+                    "name": "Wiki-book-create-subpage-prompt",
+                    "namespace": "NS_MEDIAWIKI",
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/MediaWiki%2FWiki-book-create-subpage-prompt.mediawiki"
+                },
+                {
+                    "name": "Wiki-book",
+                    "namespace": "NS_WIDGET",
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Widget%2FWiki-book.mediawiki"
                 }
             ],
             "requiredExtensions": [
               "Semantic MediaWiki",
               "Page Forms",
               "Scribunto",
-              "Semantic Scribunto"
+              "Semantic Scribunto",
+              "Widgets"
             ]
         }
     }

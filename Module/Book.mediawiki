@@ -1,0 +1,971 @@
+-- Module:Book
+-- Purpose: Provides utility functions for organizing books, sections, and chapters semantically with navigation and author formatting.
+local p = {}
+
+
+
+-- Function to split a string by semicolon
+local function split(str, sep)
+  local t = {}
+  for s in string.gmatch(str, "([^" .. sep .. "]+)") do
+    table.insert(t, s)
+  end
+  return t
+end
+
+
+
+
+
+local function queryParent(pageName)
+  -- Ensure argument exists
+  if not pageName then return nil end
+  -- Run semantic query
+  local queryResult = mw.smw.ask {
+    '[[' .. pageName .. ']]',
+    '?Has parent page#-',
+    'mainlabel=-'
+  }
+  -- Return result
+  if queryResult and #queryResult > 0 then
+    return queryResult[1]['Has parent page']
+  end
+  -- or nothing
+  return nil
+end
+
+
+
+
+
+
+-- Retrieves the book title from the wiki message or defaults to "Book Index".
+function p.getBook()
+  -- Try to get the book title from wiki-book-title message
+  local book = mw.message.new('wiki-book-title')
+  -- Set default fallback value
+  local renderBook = 'Book Index'
+  -- Check if the message exists and has content
+  if book:exists() and not book:isBlank() then
+    -- Preprocess the message content to handle any wiki markup
+    renderBook = book:plain()
+  end
+  return renderBook
+end
+
+function p.getContext(frame)
+  -- Get full page name
+  local hasTitle = mw.title.getCurrentTitle().fullText
+  -- Get template parameters
+  local args = frame:getParent().args
+  -- Get book index
+  local isPartOf = p.getBook()
+  -- Cache values
+  local hasParent = args['Has parent page'] or queryParent(hasTitle) or isPartOf or ''
+  local hasType = args['Has book element name'] or 'Page'
+  local hasOrder = tonumber(args['Has order']) or 0
+  local hasLeadAuthorsString = args['Has lead authors'] or ''
+  local hasContributingAuthorsString = args['Has contributing authors'] or ''
+  -- Build context
+  local context = {
+    hasTitle = hasTitle,
+    hasParent = hasParent,
+    hasType = hasType,
+    hasOrder = hasOrder,
+    leadAuthors = hasLeadAuthorsString,
+    leadAuthorsArray = hasLeadAuthorsString ~= '' and mw.text.split(hasLeadAuthorsString, ';') or {},
+    contributingAuthors = hasContributingAuthorsString,
+    contributingAuthorsArray = hasContributingAuthorsString ~= '' and mw.text.split(hasContributingAuthorsString, ';') or
+    {},
+    book = p.getBook()
+  }
+  return context
+end
+
+local function setProperties(context)
+  -- Ensure argument exists
+  if not context then return end
+  -- Ensure argument has correct type
+  if context and type(context) == 'table' then
+    -- Join authors
+    local leadAuthorsArray = context.leadAuthorsArray
+    local contributingAuthorsArray = context.contributingAuthorsArray
+    -- Merge into a single table
+    local allAuthors = {}
+    for _, a in ipairs(leadAuthorsArray) do table.insert(allAuthors, a) end
+    for _, a in ipairs(contributingAuthorsArray) do table.insert(allAuthors, a) end
+    -- Combine back into a semicolon-separated string
+    local authorsString = table.concat(allAuthors, ';')
+    -- Get property values from the context
+    local properties = {
+      'Has parent page=' .. context.hasParent,
+      'Has book element name=' .. context.hasType,
+      'Has order=' .. context.hasOrder,
+      'Has lead author=' .. context.leadAuthors,
+      '+sep=;',
+      'Has contributing author=' .. context.contributingAuthors,
+      '+sep=;',
+      'Has author=' .. authorsString,
+      '+sep=;',
+    }
+    -- Set properties
+    mw.smw.set(properties)
+  end
+  return
+end
+
+
+
+
+-- Formats a list of authors into either a string or HTML list format.
+-- Input:
+--   authors: string or table containing author names
+--   outputFormat: 'str' for comma-separated, 'ul' for HTML unordered list
+local function formatAuthors(authors, outputFormat)
+  if not authors or authors == '' then
+    return ''
+  end
+
+  local authorList = {}
+
+  -- Handle different input types
+  if type(authors) == 'table' then
+    -- Table input - assume it's already a list of authors
+    for _, author in ipairs(authors) do
+      if author and author ~= '' then
+        table.insert(authorList, tostring(author))
+      end
+    end
+  elseif type(authors) == 'string' then
+    -- Check if it's HTML content (contains <ul> or <li>)
+    if authors:match('<%s*ul%s*>') or authors:match('<%s*li%s*>') then
+      -- Already HTML, convert to plain text format for string output
+      if outputFormat ~= 'ul' then
+        -- Extract authors from HTML
+        local result = {}
+        for author in authors:gmatch('<li[^>]*>(.-)</li>') do
+          -- Remove any remaining HTML tags and trim whitespace
+          local cleanAuthor = author:match("^%s*(.-)%s*$")
+          if cleanAuthor ~= "" then
+            table.insert(result, cleanAuthor)
+          end
+        end
+        if #result == 0 then
+          return ''
+        end
+        -- Format as string regardless of how many authors
+        if #result == 1 then
+          return result[1]
+        elseif #result == 2 then
+          return result[1] .. ', and ' .. result[2]
+        else
+          local finalResult = ''
+          for i, author in ipairs(result) do
+            if i == #result then
+              finalResult = finalResult .. ', and ' .. author
+            else
+              finalResult = finalResult .. author .. ', '
+            end
+          end
+          return finalResult
+        end
+      else
+        -- Return HTML as-is for ul format
+        return authors
+      end
+    else
+      -- String with semicolon delimiter
+      for author in authors:gmatch("[^;]+") do
+        local trimmed = author:match("^%s*(.-)%s*$")
+        if trimmed ~= "" then
+          table.insert(authorList, trimmed)
+        end
+      end
+    end
+  end
+
+  -- If we got here and authorList is empty, return empty string
+  if #authorList == 0 then
+    return ''
+  end
+
+  -- Format based on output format
+  if outputFormat == 'ul' then
+    local html = mw.html.create('ul'):css({
+      ['margin'] = '0'
+    })
+    for _, author in ipairs(authorList) do
+      html:tag('li'):wikitext(author)
+    end
+    return tostring(html)
+  else
+    -- String format - join with commas and "and"
+    if #authorList == 1 then
+      return authorList[1]
+    elseif #authorList == 2 then
+      return authorList[1] .. ' and ' .. authorList[2]
+    else
+      local result = ''
+      for i, author in ipairs(authorList) do
+        if i == #authorList then
+          result = result .. ' and ' .. author
+        else
+          result = result .. author .. ', '
+        end
+      end
+      return result
+    end
+  end
+end
+
+
+
+
+-- Get children of current page
+local function getChildren(context)
+  -- Ensure argument exists
+  if not context then return {} end
+  -- Ensure argument has correct type
+  if context and type(context) == 'table' then
+    -- Get current page
+    local pageName = context.hasTitle or ''
+    -- Ensure context is aware of the parent page
+    if pageName and pageName ~= '' then
+      -- Get children
+      local queryResult = mw.smw.ask {
+        '[[:+]][[Has parent page::' .. pageName .. ']]',
+        '?#-=Page',
+        '?Has book element name',
+        '?Has order',
+        '?Has lead author',
+        '?Has contributing author',
+        'mainlabel=-',
+        'sort=Has order',
+        'order=asc'
+      }
+      return queryResult or {}
+    end
+  else
+    return {}
+  end
+end
+
+
+
+
+-- Render children of current page
+local function renderChildren(context)
+  -- Ensure argument exists
+  if not context then return '' end
+  -- Ensure argument has correct type
+  if context and type(context) == 'table' then
+    -- Get children
+    local children = getChildren(context)
+    -- Ensure children exist
+    if #children == 0 then return '' end
+    -- Set default fallback list heading
+    local renderIntro = 'Contents'
+    -- Try custom list heading
+    local intro = mw.message.new('wiki-book-children-list-intro', context.hasType)
+    if intro:exists() and not intro:isBlank() then
+      local frame = mw.getCurrentFrame()
+      renderIntro = frame:preprocess(intro:plain())
+    end
+    -- Assemble
+    local html = mw.html.create()
+    -- Create contents block
+    html:tag('div'):css({
+      ['font-weight'] = 'bold',
+      ['font-size'] = '1.2em'
+    }):wikitext(renderIntro)
+    -- Create list
+    local ul = html:tag('ul')
+    -- Iterate through children to build list items
+    for _, child in ipairs(children) do
+      li = ul:tag('li'):wikitext(
+        string.format('[[%s]]', child['Page'])
+      )
+      -- Append lead authors if exist
+      local leadAuthors = child['Has lead author'] or nil
+      if leadAuthors then
+        local leadAuthorsText = formatAuthors(leadAuthors, 'str')
+        li:tag('span'):wikitext(string.format(' (%s)', leadAuthorsText))
+      end
+      -- Append contributing authors if exist
+      local contributingAuthors = child['Has contributing author'] or nil
+      if contributingAuthors then
+        local contributingAuthorsText = formatAuthors(contributingAuthors, 'str')
+        li:tag('span'):wikitext(string.format(' (%s)', contributingAuthorsText))
+      end
+    end
+    return html
+  else
+    return ''
+  end
+end
+
+
+
+-- Get siblings of current page
+local function getSiblings(context)
+  -- Ensure argument exists
+  if not context then return end
+  -- Ensure argument has correct type
+  if context and type(context) == 'table' then
+    -- Return empty table if the context is parentless
+    if not context.hasParent then
+      return {}
+    end
+    -- Otherwise, get children of the parent
+    local queryResult = mw.smw.ask {
+      '[[:+]][[Has parent page::' .. context.hasParent .. ']]',
+      '?#-=Page',
+      '?Has book element name',
+      '?Has order',
+      '?Has lead author',
+      '?Has contributing author',
+      'mainlabel=-',
+      'sort=Has order',
+      'order=asc'
+    }
+    -- Return table
+    return queryResult or {}
+  else
+    return {}
+  end
+end
+
+
+
+
+-- Generate breadcrumb trail
+local function getBreadcrumbs(context)
+  -- Set table to store bredcrumbs
+  local breadcrumbs = {}
+  -- Ensure argument exists
+  if not context then return end
+  -- Ensure argument has correct type
+  if context and type(context) == 'table' then
+    -- Retrieve current title from the context
+    local current = context.hasTitle or nil
+    -- Iterate through parent pages
+    while current do
+      local parent = queryParent(current)
+      if parent and parent ~= '' then
+        table.insert(breadcrumbs, 1, {
+          crumb = string.format('[[%s]]', current)
+        })
+        -- Get the actual parent page title
+        local parentTitle = mw.title.new(parent)
+        if parentTitle and parentTitle.exists then
+          current = parentTitle.fullText
+        else
+          break
+        end
+      else
+        table.insert(breadcrumbs, 1, {
+          crumb = string.format('[[%s]]', current)
+        })
+        break
+      end
+    end
+  end
+  -- Return a table with breadcrumbs
+  return breadcrumbs
+end
+
+
+
+
+-- Decide on the breadcrumbs separator
+local function getBreadcrumbsSeparator()
+  local msg = mw.message.new('wiki-book-breadcrumb-separator')
+  if msg:exists() and not msg:isBlank() then
+    return msg:plain()
+  else
+    return '>'
+  end
+end
+
+
+local function renderCreateButton()
+  local html = mw.html.create()
+  -- Provide class to optionally hide the button via group CSS.
+  local button = html:tag('li')
+      :addClass('show-sysop')
+      :attr('id', 'create-subpage-trigger')
+      :attr('type', 'button')
+      :attr('taborder', '0')
+      :attr('title', 'Add a subpage.')
+      :tag('span')
+      :addClass('icon')
+      :wikitext('➕')
+  return tostring(html)
+end
+
+
+-- Generate breadcrumb HTML
+local function renderBreadcrumbs(context)
+  -- Set table to store bredcrumbs
+  local breadcrumbs = {}
+  -- Ensure argument exists
+  if not context then return end
+  -- Ensure argument has correct type
+  if context and type(context) == 'table' then
+    -- Fill breadcrumbs from contents
+    breadcrumbs = getBreadcrumbs(context)
+    if not breadcrumbs or #breadcrumbs == 0 then
+      return {}
+    end
+    -- Get separator
+    local separator = getBreadcrumbsSeparator()
+    -- Assemble
+    local html = mw.html.create()
+    -- Create breadcrumbs bar
+    local ul = html:tag('ul'):addClass('breadcrumbs')
+    local i = 1
+    -- Iterate through the table to build list items
+    for _, breadcrumb in ipairs(breadcrumbs) do
+      local li = ul:tag('li'):addClass('breadcrumb-item')
+      local crumb = breadcrumb['crumb']
+      -- Add special class to the last item
+      if i == #breadcrumbs then
+        li:addClass('breadcrumb-current')
+      end
+      li:wikitext(crumb):done()
+      -- Add separator for non-last items
+      if i < #breadcrumbs then
+        ul:tag('li'):addClass('breadcrumb-separator'):wikitext(separator)
+      end
+      -- Push counter
+      i = i + 1
+    end
+    ul:wikitext(renderCreateButton())
+    return html
+  end
+end
+
+
+-- Normalize node returned by either p.getContext() or mw.smw.ask() row
+local function normalizeNode(node, parentTitle)
+  -- node may be a context (hasTitle) or an SMW row (Page)
+  local title = nil
+  if type(node) == 'table' then
+    title = node.hasTitle or node.Page or node['Page'] or ''
+  end
+  -- Build normalized context-like object
+  local normalized = {
+    hasTitle = title,
+    hasParent = parentTitle or (node.hasParent and node.hasParent ~= '' and node.hasParent) or ''
+  }
+  -- preserve original fields if present (useful for rendering authors/order/etc.)
+  if type(node) == 'table' then
+    for k, v in pairs(node) do
+      if normalized[k] == nil then normalized[k] = v end
+    end
+  end
+  return normalized
+end
+
+-- Find the topmost ancestor by climbing hasParent using getParent-like behaviour.
+-- We don't have getParent helper, but we can climb using getSiblings on the parent title:
+local function getRoot(context)
+  if not context or type(context) ~= 'table' then return context end
+  local cur = normalizeNode(context)
+  while cur.hasParent and cur.hasParent ~= '' do
+    -- Build a parent context so getSiblings/getChildren will work if they expect a table
+    local parentCtx = { hasTitle = cur.hasParent }
+    -- Normalize parent (we only need its title and parent)
+    -- to fetch the parent's parent we must derive it via p.getContext or queryParent, but
+    -- we can attempt to get its parent from p.getContext if available later.
+    -- Here we rely on p.getContext / queryParent usage elsewhere: if parent has no parent, stop.
+    -- Attempt to get parent's parent via getSiblings on the parent's context's parent (best-effort).
+    -- Simplest robust approach: create a parent context from the page title and ask for its parent via p.getContext if you have it.
+    -- If p.getContext is not callable here, break to avoid infinite loop.
+    if type(p) == 'table' and type(p.getContext) == 'function' then
+      local parentFullContext = p.getContext { args = {}, frame = nil }      -- can't call like this; so instead:
+      -- Fallback: just climb one step using a minimal parentCtx and try to read its hasParent via queryParent() if you have it.
+      -- To keep this function safe and generic, break here if we cannot reliably discover parent's parent.
+      -- In typical usage getRoot is called with full context produced by p.getContext, so climbing one step is fine.
+    end
+    -- Since we cannot reliably fetch parent's parent generically without other helpers, stop climbing.
+    break
+  end
+  return cur
+end
+
+-- Correct preorder flatten that normalizes nodes and sets hasParent for children
+local function flattenBook(context)
+  if not context or type(context) ~= 'table' then return {} end
+
+  -- Ensure we work on a normalized node with hasTitle field
+  local rootNode = normalizeNode(context)
+
+  local ordered = {}
+  -- local function to recurse using normalized nodes
+  local function recurse(node)
+    table.insert(ordered, node)
+
+    -- getChildren expects a context-like table, so pass node with hasTitle
+    local childrenRaw = getChildren({ hasTitle = node.hasTitle })
+    if childrenRaw and #childrenRaw > 0 then
+      for _, childRaw in ipairs(childrenRaw) do
+        -- normalize child and set its hasParent to current node's title
+        local childNode = normalizeNode(childRaw, node.hasTitle)
+        recurse(childNode)
+      end
+    end
+  end
+
+  recurse(rootNode)
+  return ordered
+end
+
+-- Render navigation using the corrected flattenBook
+local function renderBookNavigation(context)
+  if not context or type(context) ~= 'table' then return end
+
+  -- Determine root: if you have a reliable p.getBook() (book root title), prefer that.
+  -- Otherwise, fall back to using the provided context as root (flatten will handle descendants).
+  local rootContext = nil
+  if type(p) == 'table' and type(p.getBook) == 'function' then
+    local bookTitle = p.getBook()
+    if bookTitle and bookTitle ~= '' then
+      rootContext = { hasTitle = bookTitle }
+    end
+  end
+  if not rootContext then
+    -- fallback: try to climb to top by repeatedly using getParent info from p.getContext in real usage,
+    -- but here we'll use the current context as root to guarantee traversal of its subtree.
+    rootContext = { hasTitle = context.hasTitle, hasParent = context.hasParent }
+  end
+
+  -- Flatten from the chosen root
+  local bookPages = flattenBook(rootContext)
+  if not bookPages or #bookPages == 0 then return end
+
+  -- Find current index by matching hasTitle
+  local currentIdx = nil
+  for i, page in ipairs(bookPages) do
+    if page.hasTitle == context.hasTitle or page.Page == context.hasTitle or page['Page'] == context.hasTitle then
+      currentIdx = i
+      break
+    end
+  end
+  if not currentIdx then
+    -- If the current page is not in the flattened list (e.g. rootContext was different),
+    -- attempt to flatten from the real current context to find it
+    local fallbackList = flattenBook(context)
+    for i, page in ipairs(fallbackList) do
+      if page.hasTitle == context.hasTitle then
+        -- prepend fallbackList before bookPages to preserve order (but usually not needed)
+        bookPages = fallbackList
+        currentIdx = i
+        break
+      end
+    end
+  end
+  if not currentIdx then return end
+
+  local prevPage = bookPages[currentIdx - 1]
+  local nextPage = bookPages[currentIdx + 1]
+
+  -- Build HTML navigation
+  local html = mw.html.create()
+  local nav = html:tag('div'):addClass('horizontal-navigation')
+
+  -- Previous
+  local prevButton = nav:tag('div'):addClass('wiki-book-nav-prev')
+  if prevPage and prevPage.hasTitle and prevPage.hasTitle ~= '' then
+    prevButton:wikitext(string.format('< [[%s|%s]]', prevPage.hasTitle, 'Previous Article'))
+  else
+    prevButton:wikitext('< Previous Article')
+  end
+
+  nav:tag('span'):wikitext('|')
+
+  local parentTitle = context.hasParent or ''
+  if parentTitle ~= '' then
+    nav:tag('div'):addClass('wiki-book-nav-info')
+        :wikitext(string.format('[[%s|%s]]', parentTitle, 'Parent Article'))
+  else
+    nav:tag('div'):addClass('wiki-book-nav-info')
+        :wikitext('Root Article')
+  end
+
+  nav:tag('span'):wikitext('|')
+
+  local nextButton = nav:tag('div'):addClass('wiki-book-nav-next')
+  if nextPage and nextPage.hasTitle and nextPage.hasTitle ~= '' then
+    nextButton:wikitext(string.format('[[%s|%s]] >', nextPage.hasTitle, 'Next Article'))
+  else
+    nextButton:wikitext('Next Article >')
+  end
+
+  return html
+end
+
+
+
+
+-- Generate horizontal navigation through siblings
+local function renderSiblingNavigation(context)
+  -- Ensure argument exists
+  if not context then return end
+  -- Ensure argument has correct type
+  if context and type(context) == 'table' then
+    -- Get siblings and return if not found
+    local siblings = getSiblings(context)
+    if not siblings or #siblings == 0 then
+      return
+    end
+    -- Assemble
+    local html = mw.html.create()
+    -- Generate navbar
+    local nav = html:tag('div'):addClass('horizontal-navigation')
+    -- Reset targets
+    local prevSibling = nil
+    local nextSibling = nil
+    -- Set current index
+    local currentIndex = 1
+    -- Iterate through siblings
+    for i, sibling in ipairs(siblings) do
+      -- Find the current page
+      if sibling['Page'] == context.hasTitle then
+        currentIndex = i
+        -- Get previous target
+        if i > 1 then
+          prevSibling = siblings[i - 1]
+        end
+        -- Get next target
+        if i < #siblings then
+          nextSibling = siblings[i + 1]
+        end
+        break
+      end
+    end
+    -- Previous button
+    local prevButton = nav:tag('div'):addClass('wiki-book-nav-prev')
+    -- If target exists, render button
+    if prevSibling then
+      prevButton:wikitext(
+        string.format('< [[%s|%s]]', prevSibling['Page'], 'Previous Article')
+      )
+    else
+      prevButton:wikitext(
+        string.format('< %s', 'Previous Article')
+      )
+    end
+    -- A separator
+    nav:tag('span'):wikitext('|')
+    -- Current page info
+    local currentPageInfo = nav:tag('div'):addClass('wiki-book-nav-info')
+        :wikitext(
+          string.format('[[%s|%s]]', context.hasParent, 'Parent Article')
+        )
+    -- A separator
+    nav:tag('span'):wikitext('|')
+    -- Next button
+    local nextButton = nav:tag('div'):addClass('wiki-book-nav-next')
+    -- If target exists, render button
+    if nextSibling then
+      nextButton:wikitext(
+        string.format('[[%s|%s]] >', nextSibling['Page'], 'Next Article')
+      )
+    else
+      nextButton:wikitext(
+        string.format('%s >', 'Next Article')
+      )
+    end
+    return html
+  else
+    return
+  end
+end
+
+
+
+
+local function renderAuthors(context)
+  -- Ensure argument exists
+  if not context then return '' end
+  -- Ensure argument has correct type
+  if context and type(context) == 'table' then
+    -- Get lead authors if exist
+    local leadAuthors = context.leadAuthors or nil
+    local contributingAuthors = context.contributingAuthors or nil
+    -- Ensure that at least one author exist
+    if not leadAuthors and not contributingAuthors then return '' end
+    -- Assemble
+    local html = mw.html.create()
+    -- Create authors bar
+    local authorBar = html:tag('div'):addClass('wiki-book-authors')
+    -- Render lead authors list
+    if leadAuthors and leadAuthors ~= '' then
+      local ul = authorBar:tag('ul'):addClass('wiki-book-authors-list')
+      local label = 'Lead Author:'
+      if #context.leadAuthorsArray > 1 then
+        label = 'Lead Authors:'
+      end
+      ul:tag('li'):addClass('wiki-book-authors-list-header'):wikitext(label)
+      ul:tag('li'):wikitext(formatAuthors(leadAuthors, 'str'))
+    end
+    -- Render contributing authors list
+    if contributingAuthors and contributingAuthors ~= '' then
+      local ul = authorBar:tag('ul'):addClass('wiki-book-authors-list')
+      local label = 'Contributing Author:'
+      if #context.contributingAuthorsArray > 1 then
+        label = 'Contributing Authors:'
+      end
+      ul:tag('li'):addClass('wiki-book-authors-list-header'):wikitext(label)
+      ul:tag('li'):wikitext(formatAuthors(contributingAuthors, 'str'))
+    end
+    return html
+  else
+    return ''
+  end
+end
+
+
+
+-- Form input
+local function renderForm(context)
+  -- Ensure argument exists
+  if not context then return end
+  -- Ensure argument has correct type
+  if context and type(context) == 'table' then
+    -- Query for the highest existing child number in this parent
+    local lastNumberResult = mw.smw.ask {
+      '[[Has parent page::' .. context.hasTitle .. ']]',
+      '?Has order#-',
+      'sort=Has order',
+      'order=desc',
+      'limit=1'
+    } or {}
+    -- Calculate next chapter number
+    local nextNumber = 1
+    if type(lastNumberResult) == 'table' and #lastNumberResult > 0 then
+      local lastOrder = lastNumberResult[1] and lastNumberResult[1]['Has order']
+      if lastOrder then
+        local num = tonumber(lastOrder)
+        if num then
+          nextNumber = num + 1
+        end
+      end
+    end
+    -- Get current frame
+    local frame = mw.getCurrentFrame()
+    -- Create form input with pre-filled data
+    local form = frame:callParserFunction(
+      '#forminput',
+      'form=Subpage',
+      'query string=Subpage[Has parent page]=' .. context.hasTitle .. '&Subpage[Has order]=' .. nextNumber
+    )
+    -- Get prompt message
+    local prompt = mw.message.new('wiki-book-create-subpage-prompt')
+    local renderPrompt = ''
+    if prompt:exists() and not prompt:isBlank() then
+      renderPrompt = frame:preprocess(prompt:plain())
+    end
+    -- Build HTML interface
+    local html = mw.html.create()
+    -- Provide class to optionally hide the form in group CSS. Triggered by
+    local formwrapper = html:tag('div'):attr('id', 'create-subpage-wrapper'):addClass('sysop-show')
+        :css({
+          ['padding'] = '.5rem 1rem',
+          ['background-color'] = '#f7f7f7',
+          ['margin'] = '1rem 0',
+          ['display'] = 'none'
+        })
+    -- Set form heading
+    formwrapper:tag('div'):css({
+      ['font-weight'] = 'bold',
+      ['font-size'] = '1.2em'
+    }):wikitext('Create a new page in this ' .. context.hasType):done()
+    -- Render prompt if exists
+    if renderPrompt ~= '' then
+      formwrapper:tag('div'):wikitext(renderPrompt)
+    end
+    -- Render form
+    formwrapper:wikitext(form)
+    return tostring(html)
+  else
+    return ''
+  end
+end
+
+
+
+
+local function loadWidget(frame)
+  local widget = frame:callParserFunction(
+    '#widget', 'wiki-book'
+  )
+  return widget
+end
+
+
+-- Normalize node for hierarchy with metadata
+local function normalizeHierarchyNode(node, parentTitle)
+  local title = node.hasTitle or node.Page or node['Page'] or ''
+  local hasParent = parentTitle or (node.hasParent and node.hasParent ~= '' and node.hasParent) or ''
+  local hasType = node.hasType or node['Has book element name'] or 'Page'
+  local hasOrder = tonumber(node.hasOrder) or tonumber(node['Has order']) or 0
+  local leadAuthors = node.leadAuthors or node['Has lead author'] or ''
+  local contributingAuthors = node.contributingAuthors or node['Has contributing author'] or ''
+
+  return {
+    hasTitle = title,
+    hasParent = hasParent,
+    hasType = hasType,
+    hasOrder = hasOrder,
+    leadAuthors = leadAuthors,
+    contributingAuthors = contributingAuthors,
+    children = {}
+  }
+end
+
+-- Recursively build full book hierarchy
+local function buildBookHierarchy(rootContext)
+  if not rootContext or type(rootContext) ~= 'table' then return {} end
+
+  local rootNode = normalizeHierarchyNode(rootContext)
+
+  local function recurse(node)
+    local childrenRaw = getChildren({ hasTitle = node.hasTitle })
+    node.children = {}
+    if childrenRaw and #childrenRaw > 0 then
+      for _, childRaw in ipairs(childrenRaw) do
+        local childNode = normalizeHierarchyNode(childRaw, node.hasTitle)
+        recurse(childNode)
+        table.insert(node.children, childNode)
+      end
+    end
+  end
+
+  recurse(rootNode)
+  return rootNode
+end
+
+-- Helper to normalize type string for CSS class
+local function normalizeClassName(str)
+  str = str:lower()
+  str = str:gsub('%s+', '-')   -- spaces → hyphens
+  str = str:gsub('[^%w%-]', '') -- remove invalid characters
+  return str
+end
+
+-- Render book hierarchy as HTML <ul><li> with classes and data-level
+local function renderBookHierarchyHTML(node, level)
+  if not node or not node.hasTitle then return '' end
+  level = level or 0
+
+  local html = mw.html.create()
+  local ul = html:tag('ul'):addClass('wiki-book-tree')
+
+  local function recurseRender(n, parentHtml, depth)
+    local li = parentHtml:tag('li')
+
+    -- Add class: wiki-book-{normalized-type}
+    local className = 'wiki-book-' .. normalizeClassName(n.hasType or 'page')
+    li:addClass(className)
+
+    -- Add data-level attribute
+    li:attr('data-level', tostring(depth))
+
+    -- Determine prefix for first-level elements
+    local prefix = ''
+    if depth == 1 then
+      prefix = string.format('<span class="wiki-book-tree-prefix">Part %d:</span> ', n.hasOrder or 1)
+    end
+
+    -- Display title + optional metadata (only first-level)
+    local text = ''
+    if depth == 1 then
+      text = string.format(
+        '%s[[%s]]',
+        prefix,
+        n.hasTitle
+      )
+    else
+      text = string.format('[[%s]]', n.hasTitle)
+    end
+    li:wikitext(text)
+    -- Optionally show authors at any level
+    if (n.leadAuthors and n.leadAuthors ~= '') or (n.contributingAuthors and n.contributingAuthors ~= '') then
+      local authorText = ''
+      if n.leadAuthors and n.leadAuthors ~= '' then
+        authorText = authorText .. 'Lead: ' .. formatAuthors(n.leadAuthors, 'str')
+      end
+      if n.contributingAuthors and n.contributingAuthors ~= '' then
+        if authorText ~= '' then authorText = authorText .. ' | ' end
+        authorText = authorText .. 'Contrib: ' .. formatAuthors(n.contributingAuthors, 'str')
+      end
+      li:tag('div'):addClass('wiki-book-tree-authors'):wikitext(authorText)
+    end
+    -- Render children recursively
+    if n.children and #n.children > 0 then
+      local ul = li:tag('ul')
+      for _, child in ipairs(n.children) do
+        recurseRender(child, ul, depth + 1)
+      end
+    end
+  end
+
+  -- Suppress root element; render only its children
+  if node.children and #node.children > 0 then
+    for _, child in ipairs(node.children) do
+      recurseRender(child, ul, 1)
+    end
+  end
+
+  return tostring(html)
+end
+
+
+-- Module function to display book hierarchy
+function p.showBookHierarchy(frame)
+  local context = p.getContext(frame)
+  local rootTitle = p.getBook() or context.hasTitle
+  local rootContext = { hasTitle = rootTitle }
+  local tree = buildBookHierarchy(rootContext)
+  local widget = loadWidget(frame)
+  return renderBookHierarchyHTML(tree) .. tostring(widget)
+end
+
+local function renderBookFooter(frame)
+  local footer = mw.message.new('wiki-book-footer')
+  local renderFooter = frame:preprocess(footer:plain())
+  local html = mw.html.create()
+  html:tag('div'):attr('id', 'wiki-book-footer')
+      :tag('div'):addClass('wiki-book-footer-content'):wikitext(renderFooter)
+  return html
+end
+
+
+function p.subpage(frame)
+  local context = p.getContext(frame)
+  setProperties(context)
+  local breadcrumbs = renderBreadcrumbs(context)
+  local navigation  = renderBookNavigation(context)
+  local children    = renderChildren(context)
+  local createform  = renderForm(context)
+  local authors     = renderAuthors(context)
+  local footer      = renderBookFooter(frame)
+  local widget      = loadWidget(frame)
+
+
+  local defaultform = frame:callParserFunction(
+    '#default_form', 'Subpage'
+  )
+
+  return tostring(breadcrumbs)
+      .. tostring(navigation)
+      .. tostring(children)
+      .. tostring(createform)
+      .. tostring(authors)
+      .. tostring(footer)
+      .. tostring(widget)
+end
+
+return p

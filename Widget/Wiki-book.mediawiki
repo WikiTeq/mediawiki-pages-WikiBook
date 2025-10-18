@@ -1,0 +1,121 @@
+ <style>
+ ul.breadcrumbs {
+   list-style: none;
+   margin: 0 0 1rem 0 !important;
+   padding: .5rem 1rem !important;
+   display: flex;
+   gap: .25rem;
+   background-color: #f7f7f7;
+   font-size: .85rem;
+   color: #777;
+   align-items: center;
+ }
+ .horizontal-navigation {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   padding: 0 1rem;
+   margin: 0 0 1rem 0 !important;
+   background-color: #f7f7f7;
+   gap: .25rem;
+   color: #777;
+   flex-wrap: wrap;
+ }
+ .horizontal-navigation > div {
+   white-space: nowrap;
+ }
+ .wiki-book-nav-next,
+ .wiki-book-nav-prev {
+   gap: .5rem;
+ }
+ .wiki-book-authors {
+   display: flex;
+ }
+ .wiki-book-authors-list {
+   list-style: none;
+   margin: 0 0 1rem 0 !important;
+   display: flex;
+   gap: .5rem;
+   padding: .5rem 1rem !important;
+   background: #f7f7f7;
+   line-height: initial;
+   align-items: baseline;
+ }
+ .wiki-book-authors-list:empty{
+   display: none !important;
+ }
+ .wiki-book-authors-list-header {
+   display: flex;
+   align-items: center;
+   line-height: initial;
+   font-weight: bold;
+ }
+ .wiki-book-authors-list:last-of-type {
+   flex: 1;
+ }
+ .wiki-book-tree-authors {
+   color: #777 !important;
+   font-size: .9em !important;
+ }
+ .wiki-book-tree-prefix {
+   color: #777  !important;
+ }
+ @media screen and ( max-width: 768px ) {
+   .wiki-book-authors {
+     flex-direction: column;
+   }
+   .wiki-book-authors-list-header {
+     min-width: 120px;
+   }
+   .wiki-book-authors-list:first-of-type {
+     margin-bottom: 0 !important;
+   }
+ }
+ @media screen and ( max-width: 540px ) {
+   .wiki-book-authors-list {
+     display: flex;
+     flex-direction: column;
+   }
+ }
+ #create-subpage-trigger {
+   line-height:22px;
+   flex:0 0 24px;
+   border:1px solid rgba(0,0,0,.1);
+   width:24px;
+   text-align:center;
+   height:24px;
+   cursor:pointer;
+   margin-left:auto;
+   background-color:#f0f0f0;
+ }
+ #create-subpage-trigger:hover {
+    filter: invert(.8);
+ }
+ #create-subpage-trigger.active {
+    filter: invert(1);
+ }
+ </style>
+ <script>
+ const trigger = document.getElementById('create-subpage-trigger')
+ const target  = document.getElementById('create-subpage-wrapper')
+
+ if (trigger && target) {
+   trigger.addEventListener('click', () => {
+     trigger.classList.toggle('active');
+     target.style.display = target.style.display === 'none' ? 'block' : 'none';
+   });
+ }
+
+ document.addEventListener("DOMContentLoaded", function() {
+    const horizontalNav = document.querySelector(".horizontal-navigation");
+    const bookfooter = document.getElementById("wiki-book-footer")
+    const catlinks = document.getElementById("catlinks");
+    if (horizontalNav && catlinks) {
+        const navClone = horizontalNav.cloneNode(true);
+        catlinks.parentNode.insertBefore(navClone, catlinks);
+    }
+    if (bookfooter && catlinks) {
+        catlinks.parentNode.insertBefore(bookfooter, catlinks);
+    }
+ });
+ </script>

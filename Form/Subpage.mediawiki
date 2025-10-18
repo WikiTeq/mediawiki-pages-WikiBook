@@ -1,0 +1,51 @@
+<noinclude>
+{{#forminput:form=Subpage}}
+</noinclude><includeonly>
+{{{info|create title=Create a sub-page|edit title=Edit a sub-page}}}
+{{{for template|Subpage}}}
+<p>'''Parent page *'''</p>
+<sup>The current page will be a logical subpage of this parent.</sup>
+<p>{{{field
+  |Has parent page
+  |mandatory
+  |input type=tokens
+  |values from namespace=Main
+  |max values=1
+  |existing values only
+}}}</p>
+<p>'''Element name *'''</p>
+<sup>The name of the book element.</sup>
+<p>{{{field
+  |Has book element name
+  |input type=tokens
+  |max values=1
+  |values from property=Has book element name
+  |placeholder=Default: Article
+  |mandatory
+}}}</p>
+<p>'''Order *'''</p>
+<sup>The subpage order in the set of other subpages with the same parent.</sup>
+<p>{{{field
+  |Has order
+  |input type=number
+  |size=3
+  |mandatory
+  |placeholder=0
+}}}</p>
+<p>'''Lead authors'''</p>
+<p>{{{field
+  |Has lead authors
+  |input type=tokens
+  |delimiter=;
+  |list
+}}}</p>
+<p>'''Primary contributing authors'''</p>
+<p>{{{field
+  |Has contributing authors
+  |input type=tokens
+  |delimiter=;
+  |list
+}}}</p>
+{{{end template}}}
+{{{standard input|save}}} {{{standard input|cancel}}}
+</includeonly>
