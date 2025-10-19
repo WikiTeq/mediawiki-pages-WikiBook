@@ -12,77 +12,77 @@
                 {
                     "name": "Subpage",
                     "namespace": "NS_TEMPLATE",
-                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Template%2FSubpage.mediawiki"
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/abstractelements\/Template%2FSubpage.mediawiki"
                 },
                 {
                     "name": "Book",
                     "namespace": "NS_TEMPLATE",
-                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Template%2FBook.mediawiki"
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/abstractelements\/Template%2FBook.mediawiki"
                 },
                 {
                     "name": "Subpage",
                     "namespace": "PF_NS_FORM",
-                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Form%2FSubpage.mediawiki"
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/abstractelements\/Form%2FSubpage.mediawiki"
                 },
                 {
                     "name": "Has author",
                     "namespace": "SMW_NS_PROPERTY",
-                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Property%2FHas%20author.mediawiki"
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/abstractelements\/Property%2FHas%20author.mediawiki"
                 },
                 {
                     "name": "Has lead author",
                     "namespace": "SMW_NS_PROPERTY",
-                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Property%2FHas%20lead%20author.mediawiki"
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/abstractelements\/Property%2FHas%20lead%20author.mediawiki"
                 },
                 {
                     "name": "Has contributing author",
                     "namespace": "SMW_NS_PROPERTY",
-                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Property%2FHas%20contributing%20author.mediawiki"
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/abstractelements\/Property%2FHas%20contributing%20author.mediawiki"
                 },
                 {
                     "name": "Has order",
                     "namespace": "SMW_NS_PROPERTY",
-                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Property%2FHas%20order.mediawiki"
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/abstractelements\/Property%2FHas%20order.mediawiki"
                 },
                 {
                     "name": "Has parent page",
                     "namespace": "SMW_NS_PROPERTY",
-                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Property%2FHas%20parent%20page.mediawiki"
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/abstractelements\/Property%2FHas%20parent%20page.mediawiki"
                 },
                 {
                     "name": "Has book element name",
                     "namespace": "SMW_NS_PROPERTY",
-                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Property%2FHas%20book%20element%20name.mediawiki"
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/abstractelements\/Property%2FHas%20book%20element%20name.mediawiki"
                 },
                 {
                     "name": "Book",
                     "namespace": "NS_MODULE",
-                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Module%2FBook"
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/abstractelements\/Module%2FBook"
                 },
                 {
                     "name": "Wiki-book-title",
                     "namespace": "NS_MEDIAWIKI",
-                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/MediaWiki%2FWiki-book-title.mediawiki"
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/abstractelements\/MediaWiki%2FWiki-book-title.mediawiki"
                 },
                 {
                     "name": "Wiki-book-footer",
                     "namespace": "NS_MEDIAWIKI",
-                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/MediaWiki%2FWiki-book-footer.mediawiki"
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/abstractelements\/MediaWiki%2FWiki-book-footer.mediawiki"
                 },
                 {
                     "name": "Wiki-book-breadcrumbs-separator",
                     "namespace": "NS_MEDIAWIKI",
-                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/MediaWiki%2FWiki-book-breadcrumbs-separator.mediawiki"
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/abstractelements\/MediaWiki%2FWiki-book-breadcrumbs-separator.mediawiki"
                 },
                 {
                     "name": "Wiki-book-create-subpage-prompt",
                     "namespace": "NS_MEDIAWIKI",
-                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/MediaWiki%2FWiki-book-create-subpage-prompt.mediawiki"
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/abstractelements\/MediaWiki%2FWiki-book-create-subpage-prompt.mediawiki"
                 },
                 {
                     "name": "Wiki-book",
                     "namespace": "NS_WIDGET",
-                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/master\/Widget%2FWiki-book.mediawiki"
+                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/abstractelements\/Widget%2FWiki-book.mediawiki"
                 }
             ],
             "requiredExtensions": [
