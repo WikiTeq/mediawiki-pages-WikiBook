@@ -849,6 +849,7 @@ end
 
 -- Helper to normalize type string for CSS class
 local function normalizeClassName(str)
+  str = tostring(str or '')
   str = str:lower()
   str = str:gsub('%s+', '-')   -- spaces → hyphens
   str = str:gsub('[^%w%-]', '') -- remove invalid characters
