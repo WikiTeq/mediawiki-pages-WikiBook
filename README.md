@@ -43,6 +43,7 @@ What this provides
   - MediaWiki:Wiki-book-footer - _stores content of the book footer_
   - MediaWiki:Wiki-book-breadcrumbs-separator - _allows for custom separator between breadcrumbs, default `>`_
   - MediaWiki:Wiki-book-create-subpage-prompt - _stores prompt for the subpage creation form_
+  - MediaWiki:Wiki-book-children-list-intro - _a dynamic heading for the list of the current page subordinates_
 - Assets
   - Widget:Wiki-book - contains the package-specific scripts and styles
 - page-exchange.json (package definition for import via [PageExchange](https://www.mediawiki.org/wiki/Special:MyLanguage/Extension:Page_Exchange)
