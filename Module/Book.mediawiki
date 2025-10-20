@@ -279,7 +279,7 @@ local function renderChildren(context)
       ['font-size'] = '1.2em'
     }):wikitext(renderIntro)
     -- Create list
-    local ul = html:tag('ul')
+    local ul = html:tag('ul'):addClass('wiki-book-page-subordinates')
     -- Iterate through children to build list items
     for _, child in ipairs(children) do
       li = ul:tag('li'):wikitext(

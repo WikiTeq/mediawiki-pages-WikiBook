@@ -94,6 +94,9 @@
  #create-subpage-trigger.active {
     filter: invert(1);
  }
+ .wiki-book-page-subordinates {
+    margin-bottom: 1rem;
+ }
  </style>
  <script>
  const trigger = document.getElementById('create-subpage-trigger')
