@@ -39,7 +39,6 @@ What this provides
 - Lua module (for Scribunto)
   - Module:Book
 - System messages
-  - MediaWiki:Wiki-book-title - _sets the book root page name_
   - MediaWiki:Wiki-book-footer - _stores content of the book footer_
   - MediaWiki:Wiki-book-breadcrumbs-separator - _allows for custom separator between breadcrumbs, default `>`_
   - MediaWiki:Wiki-book-create-subpage-prompt - _stores prompt for the subpage creation form_
@@ -57,10 +56,10 @@ $wgPageExchangePackageFiles[] = 'https://raw.githubusercontent.com/WikiTeq/media
 ```
 4) Navigate to `Special:Packages` and install the package
 5) Run `php maintenance/run.php runJobs` (MediaWiki 1.43)
+6) Create `MediaWiki:Wiki-book-title` and set the book title there. Keep it plain and simple, as it will be used as a page name. 
 
 ## Basic usage
-- Set the book title on `MediaWiki:Wiki-book-title`
-- Create a page that will display the full book structure. Insert `Template:Book` call (`{{Book}}`).
+- Create a page that will display the full book structure (e.g., the same page you set in `MediaWiki:Wiki-book-title`). Insert `Template:Book` call (`{{Book}}`).
 - Add Sections using Form:Section
 - Add Chapters using Form:Chapter. 
 - Module:Book is used by the templates to render indexes or perform logic. It renders:

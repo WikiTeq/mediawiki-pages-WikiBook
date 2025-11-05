@@ -60,11 +60,6 @@
                     "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/abstractelements\/Module%2FBook.mediawiki"
                 },
                 {
-                    "name": "Wiki-book-title",
-                    "namespace": "NS_MEDIAWIKI",
-                    "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/abstractelements\/MediaWiki%2FWiki-book-title.mediawiki"
-                },
-                {
                     "name": "Wiki-book-footer",
                     "namespace": "NS_MEDIAWIKI",
                     "url": "https:\/\/raw.githubusercontent.com\/WikiTeq\/mediawiki-pages-WikiBook\/abstractelements\/MediaWiki%2FWiki-book-footer.mediawiki"
