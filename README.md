@@ -1,7 +1,7 @@
 # mediawiki-pages-WikiBook
 
 ## Description
-A small, ready-to-import MediaWiki package that models a collection of pages as a Book.
+A compact, ready-to-import MediaWiki package for modeling books with any hierarchical structure.
 
 The package supports cases where a wiki is used to host an entire book.  
 
