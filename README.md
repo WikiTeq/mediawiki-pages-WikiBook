@@ -1,15 +1,13 @@
 # mediawiki-pages-WikiBook
 
 ## Description
-A small, ready-to-import MediaWiki package that models a Book with Chapters and Sections. 
+A small, ready-to-import MediaWiki package that models a collection of pages as a Book.
 
 The package supports cases where a wiki is used to host an entire book.  
 
-It provides semantic support for two levels of the book hierarchy (Sections > Chapters).
+It provides semantic support for the arbitrary levels of the book hierarchy.
 
-Further structuring within chapters is handled using standard MediaWiki formatting (headings, subheadings, paragraphs, etc.).
-
-The package ships pages for Templates, Forms, Categories, Properties, and a Lua Module so you can create and organize book content in a wiki.
+The package ships pages for Templates, Forms, Properties, Widgets, System messages, and a Lua Module so you can create and organize book content in a wiki.
 
 ## Requirements
 
@@ -21,27 +19,32 @@ Your MediaWiki version can be relatively standard; if you’re unsure, use a cur
 * [PageForms](https://www.mediawiki.org/wiki/Special:MyLanguage/Extension:Page_Forms/Download_and_installation)
 * [Scribunto](https://www.mediawiki.org/wiki/Special:MyLanguage/Extension:Scribunto)
 * [SemanticScribunto](https://www.mediawiki.org/wiki/Special:MyLanguage/Extension:Semantic_Scribunto)
+* [Widgets](https://www.mediawiki.org/wiki/Special:MyLanguage/Extension:Widgets)
 
 You will need [PageExchange](https://www.mediawiki.org/wiki/Special:MyLanguage/Extension:Page_Exchange) to install the package.
 
 ## Contents
 What this provides
 - Templates
-  - Template:Book
-  - Template:Chapter
-  - Template:Section
+  - Template:Book - _renders book hierarchy_
+  - Template:Subpage - _stores page semantics and renders package-specific elements_
 - Forms (for PageForms)
-  - Form:Chapter
-  - Form:Section
-- Categories
-  - Category:Chapter
-  - Category:Section
+  - Form:Subpage - _default form for managing the book page metadata_
 - Semantic properties (for Semantic MediaWiki)
-  - Property:Chapter author
-  - Property:Has order
+  - Property:Has lead author
+  - Property:Has contributing author
+  - Property:Has author - _internally joins values of the previous two_
+  - Property:Has order - _defines the order of the page across the siblings of the same parent_
   - Property:Has parent page
 - Lua module (for Scribunto)
   - Module:Book
+- System messages
+  - MediaWiki:Wiki-book-footer - _stores content of the book footer_
+  - MediaWiki:Wiki-book-breadcrumbs-separator - _allows for custom separator between breadcrumbs, default `>`_
+  - MediaWiki:Wiki-book-create-subpage-prompt - _stores prompt for the subpage creation form_
+  - MediaWiki:Wiki-book-children-list-intro - _a dynamic heading for the list of the current page subordinates_
+- Assets
+  - Widget:Wiki-book - contains the package-specific scripts and styles
 - page-exchange.json (package definition for import via [PageExchange](https://www.mediawiki.org/wiki/Special:MyLanguage/Extension:Page_Exchange)
 
 ## How to install/import
@@ -53,14 +56,16 @@ $wgPageExchangePackageFiles[] = 'https://raw.githubusercontent.com/WikiTeq/media
 ```
 4) Navigate to `Special:Packages` and install the package
 5) Run `php maintenance/run.php runJobs` (MediaWiki 1.43)
+6) Create `MediaWiki:Wiki-book-title` and set the book title there. Keep it plain and simple, as it will be used as a page name. 
 
 ## Basic usage
-- Set the book title on `MediaWiki:Wiki-book-title`, replacing the default value (`{{SITENAME}}`) 
-- Create a page that will display the full book structure. Insert `Template:Book` call (`{{Book}}`).
+- Create a page that will display the full book structure (e.g., the same page you set in `MediaWiki:Wiki-book-title`). Insert `Template:Book` call (`{{Book}}`).
 - Add Sections using Form:Section
 - Add Chapters using Form:Chapter. 
 - Module:Book is used by the templates to render indexes or perform logic. It renders:
-  - Context-dependent breadcrumbs ( Book / Section / Chapter )
-  - In-book or in-section linear navigation ( Previous / Next )
-  - A list of Chapters and their respective authors (on the Section pages)
-  - A helper form input at the bottom of the Section pages that makes adding new Chapters easier.
+  - Context-dependent breadcrumbs
+  - Linear navigation ( Previous / Next )
+  - Author list
+  - List of subordinate pages
+  - A helper form input that makes adding new Chapters easier
+  - Book footer
