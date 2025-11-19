@@ -370,7 +370,7 @@ local function renderCreateButton()
     local html = mw.html.create()
     -- Provide class to optionally hide the button via group CSS.
     html:tag('li')
-        :addClass('show-sysop')
+        :addClass('show-sysop noprint')
         :attr('id', 'create-subpage-trigger')
         :attr('type', 'button')
         :attr('taborder', '0')
@@ -400,7 +400,7 @@ local function renderBreadcrumbs(context)
         -- Assemble
         local html = mw.html.create()
         -- Create breadcrumbs bar
-        local ul = html:tag('ul'):addClass('breadcrumbs')
+        local ul = html:tag('ul'):addClass('breadcrumbs noprint')
         local i = 1
         -- Iterate through the table to build list items
         for _, breadcrumb in ipairs(breadcrumbs) do
@@ -533,7 +533,7 @@ local function renderBookNavigation(context)
 
     -- Build HTML navigation
     local html = mw.html.create()
-    local nav = html:tag('div'):addClass('horizontal-navigation')
+    local nav = html:tag('div'):addClass('horizontal-navigation noprint')
 
     -- Previous
     local prevButton = nav:tag('div'):addClass('wiki-book-nav-prev')
@@ -683,10 +683,14 @@ local function renderForm(context)
 end
 
 local function loadWidget(frame)
+    local html = mw.html.create()
     local widget = frame:callParserFunction(
             '#widget', 'wiki-book'
     )
-    return widget
+    html:tag('div'):addClass('noprint'):css({
+      ['display'] = 'none'
+    }):wikitext(widget)
+    return html
 end
 
 
